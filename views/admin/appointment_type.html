@@ -1,0 +1,201 @@
+{{ template "admin_layout" }}
+
+<div class="container">
+    <h1 class="text-center display-1">Tipos de Consultas</h1>
+    <hr>
+
+    {{ if .error }}
+    <p class="text-center text-danger">{{ .error }}</p>
+    {{ end }}
+
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn bg-success bg-opacity-25" data-bs-toggle="modal"
+            data-bs-target="#newAppointmentType">
+            Nuevo
+        </button>
+
+        <!-- New Appointment Type Modal -->
+        <div class="modal fade" id="newAppointmentType" tabindex="-1" aria-labelledby="newAppointmentTypeLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title display-6" id="newAppointmentTypeLabel">Crear Tipo de Consulta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/admin/appointmentTypes" method="post" class="needs-validation" novalidate>
+                        <div class="modal-body">
+                            <div class="form-floating mb-3">
+                                <input name="name" type="text" class="form-control" id="atName" placeholder="Nombre"
+                                    required>
+                                <label for="atName">Nombre</label>
+                                <div class="valid-feedback">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Ingrese un nombre para el tipo de consulta.
+                                </div>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input name="description" type="text" class="form-control" id="atDescription"
+                                    placeholder="Descripción" required>
+                                <label for="atDescription">Descripción</label>
+                                <div class="valid-feedback">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Ingrese una descripción para el tipo de consulta.
+                                </div>
+                            </div>
+                            <div class="form-floating">
+                                <input name="price" min="0" type="text" class="form-control" id="atPrice"
+                                    placeholder="Precio"
+                                    pattern="^\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$" required>
+                                <label for="atPrice">Precio ($)</label>
+                                <div class="valid-feedback">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Ingrese un monto valido para el tipo de consulta.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn bg-secondary bg-opacity-25"
+                                data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn bg-primary bg-opacity-25">Crear</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="accordion accordion-flush" id="appointmentTypes">
+        {{ if not .Types }}
+        <p class="text-center lead fst-italic">No hay tipos de consulta existentes.</p>
+        {{ end }}
+
+        {{ range .Types }}
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ .Id }}">
+                <button class="accordion-button bg-success bg-opacity-10 text-black fst-italic" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapse{{ .Id }}" aria-expanded="true"
+                    aria-controls="collapse{{ .Id }}">
+                    {{ .Name }}
+                </button>
+            </h2>
+            <div id="collapse{{ .Id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ .Id }}">
+                <div class="accordion-body">
+                    <div class="list-group list-group-flush">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <i><b>Descripción:</b></i> {{ .Description }}
+                                <br>
+                                <i><b>Precio:</b></i> ${{ .Price }}
+                                <span class="d-flex justify-content-start">
+
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-end">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="button" class="btn bg-primary bg-opacity-25"
+                                                data-bs-toggle="modal" data-bs-target="#updateAppointmentType{{ .Id }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+
+                                            <!-- Update Appointment Type Modal -->
+                                            <div class="modal fade" id="updateAppointmentType{{ .Id }}" tabindex="-1"
+                                                aria-labelledby="updateAppointmentType{{ .Id }}Label"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title display-6"
+                                                                id="updateAppointmentType{{ .Id }}Label">Editar Tipo de
+                                                                Consulta</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="/admin/appointmentTypes" method="post"
+                                                            class="needs-validation" novalidate>
+                                                            <div class="modal-body">
+                                                                <!-- Id -->
+                                                                <input type="hidden" name="id" value="{{ .Id }}">
+
+                                                                <!-- Name -->
+                                                                <div class="form-floating mb-3">
+                                                                    <input value="{{ .Name }}" name="name" type="text"
+                                                                        class="form-control" id="atName"
+                                                                        placeholder="Nombre" required>
+                                                                    <label for="atName">Nombre</label>
+                                                                    <div class="valid-feedback">
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        Ingrese un nombre para el tipo de consulta.
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Description -->
+                                                                <div class="form-floating mb-3">
+                                                                    <input value="{{ .Description }}" name="description"
+                                                                        type="text" class="form-control"
+                                                                        id="atDescription" placeholder="Descripción"
+                                                                        required>
+                                                                    <label for="atDescription">Descripción</label>
+                                                                    <div class="valid-feedback">
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        Ingrese una descripción para el tipo de
+                                                                        consulta.
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Price -->
+                                                                <div class="form-floating">
+                                                                    <input value="{{ .Price }}" name="price" min="0"
+                                                                        type="text" class="form-control" id="atPrice"
+                                                                        placeholder="Precio"
+                                                                        pattern="^\$?([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(.[0-9][0-9])?$"
+                                                                        required>
+                                                                    <label for="atPrice">Precio ($)</label>
+                                                                    <div class="valid-feedback">
+                                                                    </div>
+                                                                    <div class="invalid-feedback">
+                                                                        Ingrese un monto valido para el tipo de
+                                                                        consulta.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button"
+                                                                    class="btn bg-secondary bg-opacity-50"
+                                                                    data-bs-dismiss="modal">Cerrar</button>
+                                                                <button type="submit"
+                                                                    class="btn bg-primary bg-opacity-25">Guardar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <form action="/admin/appointmentTypes/{{ .Id }}" method="post">
+                                                <button type="submit" class="btn bg-danger bg-opacity-50">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ end }}
+    </div>
+</div>

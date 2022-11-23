@@ -1,0 +1,143 @@
+{{ template "admin_layout" }}
+
+<div class="container overflow-auto">
+    <h1 class="text-center display-1">Clientes</h1>
+    <hr>
+
+    {{ if .error }}
+    <p class="text-center text-danger">{{ .error }}</p>
+    {{ end }}
+
+    <div class="accordion accordion-flush" id="clients">
+        {{ if not .Clients }}
+        <p class="text-center lead fst-italic">No hay clientes existentes.</p>
+        {{ end }}
+        
+        {{ range $client := .Clients }}
+        {{ with $fm := $.FuncMap }}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ $client.Id }}">
+                <button class="accordion-button bg-success bg-opacity-10 text-black fst-italic" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $client.Id }}" aria-expanded="true"
+                    aria-controls="collapse{{ $client.Id }}">
+                    {{ $client.FullName }}
+                </button>
+            </h2>
+            <div id="collapse{{ $client.Id }}" class="accordion-collapse collapse"
+                aria-labelledby="heading{{ $client.Id }}">
+                <div class="accordion-body">
+                    <div class="list-group list-group-flush">
+                        <form action="/admin/clients" method="post" class="needs-validation" novalidate>
+                            <div class="row">
+                                <div class="col-12 col-md-8 offset-md-2">
+                                    <div class="modal-body">
+                                        <!-- Id -->
+                                        <input type="hidden" name="id" value="{{ $client.Id }}">
+
+                                        <!-- Full Name -->
+                                        <div class="form-floating mb-3">
+                                            <input value="{{ $client.FullName }}" name="full_name" id="full_name"
+                                                type="text" class="form-control" placeholder="Nombre" required>
+                                            <label for="full_name">Nombre</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese un nombre.
+                                            </div>
+                                        </div>
+
+                                        <!-- Birthdate -->
+                                        <div class="form-floating mb-3">
+                                            <input type="date" class="form-control" id="birthdate_"
+                                                value="{{ (call $fm.toYYYYMMDD $client.Birthdate) }}"
+                                                placeholder="Fecha de Nacimiento" min="1900-01-01" required>
+                                            <input hidden type="text" value="{{ $client.Birthdate }}" name="birthdate"
+                                                id="birthdate">
+                                            <label for="birthdate">Fecha de Nacimiento</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese la fecha de nacimiento.
+                                            </div>
+                                        </div>
+
+                                        <!-- Address -->
+                                        <div class="form-floating mb-3">
+                                            <input value="{{ $client.Address }}" name="address" id="address" type="text"
+                                                class="form-control" placeholder="Dirección" required>
+                                            <label for="address">Dirección</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese una dirección.
+                                            </div>
+                                        </div>
+
+                                        <!-- Locality -->
+                                        <div class="form-floating mb-3">
+                                            <input value="{{ $client.Locality }}" name="locality" id="locality" type="text"
+                                                class="form-control" placeholder="Dirección" required>
+                                            <label for="locality">Ciudad</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese una ciudad.
+                                            </div>
+                                        </div>
+
+                                        <!-- Country -->
+                                        <div class="form-floating mb-3 d-flex justify-content-center">
+                                            <input name="country" id="country" type="text" class="form-control" id="country" required />
+                                            <input name="country_code" id="country_code" value="{{ $client.CountryCode }}" type="hidden" required />
+
+                                            <div class="valid-feedback"></div>
+                                            <div class="invalid-feedback">
+                                                Ingrese su País.
+                                            </div>
+                                        </div>
+
+                                        <!-- Email -->
+                                        <div class="form-floating mb-3">
+                                            <input value="{{ $client.Email }}" name="email" id="email" type="email"
+                                                class="form-control" placeholder="Email" required>
+                                            <label for="email">Email</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese un email válido.
+                                            </div>
+                                        </div>
+
+                                        <!-- Phone Number -->
+                                        <div class="form-floating mb-3">
+                                            <input value="{{ $client.PhoneNumber }}" name="phone_number" id="phone_number"
+                                                type="text" class="form-control" placeholder="Teléfono" required>
+                                            <label for="phone_number">Teléfono</label>
+
+                                            <div class="valid-feedback">
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                Ingrese un teléfono válido.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex justify-content-evenly mb-3">
+                                    <button type="submit" class="btn bg-success bg-opacity-25">Guardar</button>
+                                </div>
+                                <hr>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+        {{ end }}
+    </div>
+</div>

@@ -1,0 +1,146 @@
+{{ template "admin_layout" }}
+
+<div class="container overflow-auto">
+    <h1 class="text-center display-1">Reservas</h1>
+    <hr>
+
+    {{ if .error }}
+    <p class="text-center text-danger">{{ .error }}</p>
+    {{ end }}
+
+    <div class="row">
+        <div class="col-12">
+            {{ if not .Bookings }}
+            <p class="text-center lead fst-italic">No hay reservas existentes.</p>
+            {{ end }}
+
+            {{ range $booking := .Bookings }}
+            {{ with $fm := $.FuncMap }}
+            <div class="accordion accordion-flush" id="bookings">
+                <div class="accordion-item m-2">
+                    <h2 class="accordion-header" id="booking{{ (call $fm.bookingId $booking) }}Heading">
+                        <button class="accordion-button collapsed bg-success bg-opacity-10 text-black fst-italic"
+                            type="button" data-bs-toggle="collapse"
+                            data-bs-target="#booking{{ (call $fm.bookingId $booking) }}" aria-expanded="false"
+                            aria-controls="booking{{ (call $fm.bookingId $booking) }}">
+                            {{ with $ap := $booking.Appointment }}
+
+                            {{ with $fm := $.FuncMap }}
+
+                            {{ $ap.Day }} {{ (call $fm.toDDMMYYYY $ap.Date) }}
+                            de {{ $ap.StartHour.Hour }}:00 a {{ $ap.EndHour.Hour }}:00
+
+                            {{ end }}
+
+                            {{ end }}
+                        </button>
+                    </h2>
+                    <div id="booking{{ (call $fm.bookingId $booking) }}" class="accordion-collapse collapse"
+                        aria-labelledby="booking{{ (call $fm.bookingId $booking) }}Heading" data-bs-parent="bookings">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-12 col-md-6 d-flex justify-content-center">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="text-center display-6">Datos del Cliente</p>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ with $client := $booking.Client }}
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Nombre:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .FullName }}</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Fecha de Nacimiento:</span>
+                                                    <p class="text-start text-md-start text-lg-end">
+                                                        {{ (call $fm.toDDMMYYYY $client.Birthdate) }}
+                                                    </p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Dirección:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .Address }}</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Ciudad:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .Locality }}</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">País:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .Country }}</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Email:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .Email }}</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Teléfono:</span>
+                                                    <p class="text-start text-md-start text-lg-end">{{ .PhoneNumber }}</p>
+                                                </li>
+                                            </ul>
+                                            {{ end }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="text-center display-6">Datos del Turno</p>
+                                        </div>
+                                        <div class="col-12">
+                                            {{ with $appointment := $booking.Appointment }}
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Día:</span>
+                                                    <p class="text-start text-md-start text-lg-end">
+                                                        {{ .Day }}
+                                                    </p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Fecha:</span>
+                                                    <p class="text-start text-md-start text-lg-end">
+                                                        {{ (call $fm.toDDMMYYYY $appointment.Date) }}
+                                                    </p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <span class="fst-italic lead">Horario:</span>
+                                                    <p class="text-start text-md-start text-lg-end">
+                                                        {{ .StartHour.Hour }}:00 a {{ .EndHour.Hour }}:00
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            {{ end }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <p class="text-center display-6">Tipo de Consulta</p>
+                                    {{ with $booking.AppointmentType }}
+                                    <p class="text-center">{{ .Name }}</p>
+                                    {{ end }}
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <p class="text-center display-6">Metodo de Pago</p>
+                                    {{ with $booking.PaymentMethod }}
+                                    <p class="text-center">{{ .Name }}</p>
+                                    {{ end }}
+                                </div>
+                                <div class="col-12 d-flex justify-content-evenly">
+                                    <form action="/admin/bookings" method="post">
+                                        <input type="hidden" name="client_id" value="{{ $booking.Client.Id }}">
+                                        <input type="hidden" name="appointment_id" value="{{ $booking.Appointment.Id }}">
+                                        <input type="hidden" name="appointment_type_id" value="{{ $booking.AppointmentType.Id }}">
+                                        <input type="hidden" name="payment_method_id" value="{{ $booking.PaymentMethod.Id }}">
+                                        <button type="submit" class="btn bg-danger bg-opacity-50">Cancelar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ end }}
+            {{ end }}
+        </div>
+    </div>
+</div>

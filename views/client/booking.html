@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es" class="h-100" data-lt-installed="true">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Appointments">
+    <meta name="author" content="jjoss">
+    <meta name="keywords" content="Appointments">
+
+    <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
+
+    <title>Reservas</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="preload" href="/static/assets/bootstrap/css/bootstrap.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
+    </noscript>
+
+    <link rel="preload" href="/static/assets/bootstrap/icons/bootstrap-icons.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/bootstrap/icons/bootstrap-icons.css">
+    </noscript>
+
+    <!-- Datepicker CSS -->
+    <link rel="preload" href="/static/assets/datepicker/css/bootstrap-datepicker3.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/datepicker/css/bootstrap-datepicker3.css">
+    </noscript>
+
+    <!-- Country Picker CSS -->
+    <link rel="preload" href="/static/assets/country-select/css/countrySelect.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/country-select/css/countrySelect.min.css">
+    </noscript>
+</head>
+
+<body class="d-flex w-100 h-100 p-3 mx-auto flex-column text-center text-dark bg-light">
+    <div class="cover-container">
+        <header class="mb-auto">
+            <p class="text-center display-1">Reservas</p>
+            <hr>
+
+            {{ if .error }}
+            <p class="text-center text-danger">{{ .error }}</p>
+            {{ end }}
+        </header>
+
+        <main class="px-3">
+            <form action="/bookings" method="post" class="needs-validation" novalidate>
+                <!-- Appointment date -->
+                <div class="row">
+                    <p class="display-6">Fecha para el Turno</p>
+
+                    <div class="col-12 col-md-6 d-flex flex-column justify-content-center align-items-center">
+                        <p hidden id="calendarSettingsMsg" class="text-center text-danger">
+                            Ha ocurrido un error.
+                        </p>
+
+                        <div id="calendarSpinner" hidden="true" class="spinner-border text-success"
+                            style="--bs-text-opacity: .5;" role="status"></div>
+
+                        <div id="datepicker"></div>
+                        <input id="datepicker-input" name="appointment_date" type="hidden">
+
+                        <input id="attentionDay" type="hidden" name="attention_day">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="list-group list-group-flush">
+                            <div id="toast" class="toast align-items-center position-fixed top-0 end-0 m-3 border-0"
+                                role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="d-flex">
+                                    <div id="toastBody" class="toast-body">
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                        data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div hidden="true" id="hoursListSpinner" class="spinner-border text-success"
+                                    style="--bs-text-opacity: .5;" role="status"></div>
+                            </div>
+
+                            <input id="attentionHourStart" type="hidden" name="attention_hour_start">
+                            <input id="attentionHourEnd" type="hidden" name="attention_hour_end">
+
+                            <div class="d-flex flex-column justify-content-center align-items-center align-middle"
+                                id="attentionHoursList">
+                            </div>
+                        </div>
+                    </div>
+                    <div hidden id="appointmentInfo" class="col-12 p-2">
+                        <p id="appointmentInfoTitle" class="text-center"></p>
+                        <p class="text-center lead fst-italic"><strong id="appointmentInfoContent"></strong></p>
+                    </div>
+                </div>
+                <hr>
+
+                {{ if .AppointmentTypes }}
+                <!-- Appointment type and Payment Method -->
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <p class="display-6">Tipo de Consulta</p>
+
+                        {{ range .AppointmentTypes }}
+                        <div class="form-check form-check-inline p-3">
+                            <input name="appointment_type" value="{{ .Id }}" class="form-check-input" type="radio"
+                                id="appointmentType{{ .Id }}" required>
+                            <label class="form-check-label" for="appointmentType{{ .Id }}">{{ .Name }}</label>
+
+                            <hr>
+                            <span>Precio: ${{ .Price }}</span>
+                        </div>
+                        {{ end }}
+                    </div>
+
+                    <hr class="d-md-none">
+
+                    <div class="col-12 col-md-6 flex-column d-flex justify-content-center align-items-center">
+                        <p class="display-6">Pago de la Reserva</p>
+
+                        <div id="paymentContainer"></div>
+
+                        {{ if not .PaymentMethods }}
+                        <p class="text-center lead fst-italic">Lo sentimos, aún no hay métodos de pago disponibles.</p>
+                        {{ end }}
+
+                        {{ range .PaymentMethods }}
+                        <div class="form-check form-check-inline p-3">
+                            <input name="payment_method" value="{{ .Id }}" class="form-check-input" type="radio"
+                                id="paymentMethod{{ .Id }}" required>
+                            <label class="form-check-label" for="paymentMethod{{ .Id }}">{{ .Name }}</label>
+                        </div>
+                        {{ end }}
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Client data -->
+                <div class="row">
+                    <p class="display-6">Datos Personales</p>
+
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input name="full_name" type="text" class="form-control" id="name"
+                                placeholder="Nombre completo" required>
+                            <label for="name">Nombre Completo</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese su nombre completo.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="birthdate_" placeholder="Fecha de Nacimiento"
+                                min="1900-01-01" required>
+                            <input hidden type="text" name="birthdate" id="birthdate">
+                            <label for="birthdate">Fecha de Nacimiento</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese una fecha valida.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input name="email" type="email" class="form-control" id="email" placeholder="Email"
+                                required>
+                            <label for="email">Email</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese un email valido.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input name="phone_number" type="tel" class="form-control" id="phone_number"
+                                placeholder="Teléfono" required>
+                            <label for="phone_number">Teléfono</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese su teléfono.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex justify-content-center align-items-center">
+                        <div class="row mb-3">
+                            <div class="col-4 text-start text-wrap d-flex align-items-center" style="width: 6rem;">
+                                <label for="country">País</label>
+                            </div>
+                            <div class="col-8 d-flex justify-content-start">
+                                <input name="country" type="text" class="form-control" id="country" required />
+                                <input name="country_code" type="hidden" id="country_code" required />
+
+                                <div class="valid-feedback"></div>
+                                <div class="invalid-feedback">
+                                    Ingrese su País.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input name="locality" type="text" class="form-control" id="locality"
+                                placeholder="Localidad" required>
+                            <label for="locality">Ciudad</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese su Ciudad.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-floating mb-3">
+                            <input name="address" type="text" class="form-control" id="address" placeholder="Dirección"
+                                required>
+                            <label for="address">Dirección</label>
+
+                            <div class="valid-feedback"></div>
+                            <div class="invalid-feedback">
+                                Ingrese su Dirección.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Submit Button -->
+                <div class="col-12 d-flex justify-content-center p-3">
+                    <div class="d-grid gap-2 col-6">
+                        <button class="btn btn-lg bg-success bg-opacity-25" type="submit">
+                            <p class="display-6 fst-italic">
+                                <strong>Reservar!</strong>
+                            </p>
+                        </button>
+                    </div>
+                </div>
+                {{ end }}
+            </form>
+        </main>
+
+        <footer class="mt-auto text-dark-50">
+            <p class="mt-5">
+                Footer
+                <a href="/" class="text-dark">Link a la landing page</a>,
+                by
+                <a href="/" class="text-dark">Link a alguna red social</a>.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script defer src="/static/assets/bootstrap/js/popper.min.js"></script>
+    <script defer src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script defer src="/static/assets/bootstrap/js/jquery-3.6.0.slim.min.js"></script>
+    <script defer src="/static/assets/datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script defer src="/static/assets/datepicker/locales/bootstrap-datepicker.es.min.js"></script>
+
+    <!-- Mercado Pago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+    <!-- Country Picker JS -->
+    <script defer src="/static/assets/country-select/js/countrySelect.min.js"></script>
+
+    <script defer type="module" src="/static/assets/js/common.js"></script>
+    <script defer type="module" src="/static/assets/js/client/appointment.js"></script>
+</body>
+
+</html>

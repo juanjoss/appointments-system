@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    build:
+      dockerfile: ./db/Dockerfile
+      context: .
+    environment:
+      POSTGRES_PASSWORD: t1m0-ap7o1n7m3n7s
+      POSTGRES_USER: user
+      POSTGRES_DB: appointments
+    ports:
+      - 5432:5432
+    volumes:
+      - /usr/local/pgsql:/usr/local/pgsql
+    restart: always
+  app:
+    container_name: app
+    hostname: app
+    depends_on:
+      - postgres
+    build:
+      dockerfile: ./Dockerfile
+      target: dev
+      context: .
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: t1m0-ap7o1n7m3n7s
+      DB_NAME: appointments
+      DB_SSL_MODE: disable
+      APP_PORT: 3000
+      TZ: America/Buenos_Aires
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/src
+    command: reflex -r '(\.go$$|go\.mod|\.html$$)' --decoration=fancy -s go run main.go
+    restart: always
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - /usr/local/pgadmin:/usr/local/pgadmin

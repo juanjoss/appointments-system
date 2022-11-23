@@ -1,0 +1,150 @@
+{{ template "admin_layout" }}
+
+<div class="container overflow-auto">
+    <h1 class="text-center display-1">Configuración</h1>
+
+    {{ if .error }}
+    <p class="text-center text-danger">{{ .error }}</p>
+    {{ end }}
+
+    {{ with .Admin }}
+    <div class="card p-3">
+        <h3 class="text-center display-6">Datos Personales</h3>
+
+        <form action="/admin/profile" method="post" class="row g-3 needs-validation" novalidate>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input value="{{ .Email }}" name="email" type="email" class="form-control" id="adminEmail"
+                        placeholder="Email" required>
+                    <label for="adminEmail">Email</label>
+
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese un email valido.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group form-floating mb-3">
+                    <input disabled value="{{ .Password }}" name="password" id="password" type="password" class="form-control"
+                        id="adminPassword" placeholder="Contraseña" required aria-label="Contraseña"
+                        aria-describedby="showPasswordBtn">
+                    <label for="adminPassword">Contraseña</label>
+                    <button class="btn btn-outline-secondary" type="button" id="showPasswordBtn">
+                        <i id="passwordEyeIcon" class="bi bi-eye-slash"></i>
+                    </button>
+
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese su contraseña.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input value="{{ .FullName }}" name="full_name" type="text" class="form-control" id="adminName"
+                        placeholder="Nombre completo" required>
+                    <label for="adminName">Nombre Completo</label>
+
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese su nombre completo.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input value="{{ .PhoneNumber }}" name="phone_number" type="text" class="form-control"
+                        id="adminPhoneNumber" placeholder="Teléfono" required
+                        pattern="^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$">
+                    <label for="adminPhoneNumber">Teléfono</label>
+
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese su teléfono. Formato: +xx xxxx xxxxxx
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-3">
+                    <input disabled value="{{ .AvailabilityPeriod }}" type="text" class="form-control" id="adminAP"
+                        placeholder="Periodo de Disponibilidad" required>
+                    <label class="text-sm" for="adminAP">Periodo de Disponibilidad</label>
+                </div>
+            </div>
+
+            <hr>
+            <h3 class="text-center display-6">Dias de Atención</h3>
+
+            <div class="col-12">
+                <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+                    {{ range $.AttentionDays }}
+                    <div class="form-check form-switch m-2">
+                        <input name="{{ .Day }}" class="form-check-input" type="checkbox" role="switch"
+                            id="day{{ .Day }}" {{ if eq .Active true }} checked {{ end }}>
+                        <label class="form-check-label" for="day{{ .Day }}">{{ .Day }}</label>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+
+            <hr>
+            <h3 class="text-center display-6">Horario de Atención</h3>
+
+            <div class="col-6">
+                <div class="form-floating">
+                    <input disabled value="{{ .AttentionHourStart.Hour }}" min="1" max="24" type="text"
+                        class="form-control" id="attentionScheduleStart" placeholder="Inicio" required>
+                    <label for="attentionScheduleStart">Inicio</label>
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese un horario valido.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-floating">
+                    <input disabled value="{{ .AttentionHourEnd.Hour }}" min="1" max="24" type="text"
+                        class="form-control" id="attentionScheduleEnd" placeholder="Finalización" required>
+                    <label for="attentionScheduleEnd">Finalización</label>
+                    <div class="valid-feedback">
+                    </div>
+                    <div class="invalid-feedback">
+                        Ingrese un horario valido.
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="col-md-12 d-flex justify-content-center">
+                <button type="submit" class="btn bg-success bg-opacity-25">Guardar</button>
+            </div>
+        </form>
+    </div>
+    {{ end }}
+</div>
+
+<script>
+    const togglePasswordBtn = document.querySelector("#showPasswordBtn")
+    const password = document.querySelector("#password")
+    const icon = document.querySelector("#passwordEyeIcon")
+
+    togglePasswordBtn.addEventListener("click", function () {
+        // toggle the type attribute
+        const type = password.getAttribute("type") === "password" ? "text" : "password"
+        password.setAttribute("type", type)
+
+        // toggle the icon
+        if (type === "text") {
+            icon.className = "bi bi-eye"
+        }
+        else if (type === "password") {
+            icon.className = "bi-eye-slash"
+        }
+    })
+</script>

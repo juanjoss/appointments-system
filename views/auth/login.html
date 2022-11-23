@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es" data-lt-installed="true">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Appointments">
+    <meta name="author" content="jjoss">
+    <meta name="keywords" content="Appointments">
+
+	<link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
+
+	<title>Login</title>
+
+	<!-- Bootstrap CSS -->
+	<link rel="preload" href="/static/assets/bootstrap/css/bootstrap.min.css" as="style"
+		onload="this.onload=null;this.rel='stylesheet'">
+	<noscript>
+		<link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
+	</noscript>
+
+	<link rel="preload" href="/static/assets/bootstrap/icons/bootstrap-icons.css" as="style"
+		onload="this.onload=null;this.rel='stylesheet'">
+	<noscript>
+		<link rel="stylesheet" href="/static/assets/bootstrap/icons/bootstrap-icons.css">
+	</noscript>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row d-flex justify-content-center align-items-center mt-5 p-3">
+			<form action="/auth/login" method="post" class="card bg-secondary bg-opacity-25 p-3 needs-validation"
+				novalidate>
+				<div class="row">
+					<div class="col-12">
+						<div class="form-outline mb-4">
+							<h1 class="text-center display-1">Login</h1>
+
+							{{ if .error }}
+							<p class="text-center text-danger">{{ .error }}</p>
+							{{ end }}
+						</div>
+					</div>
+					<div class="col-12 col-md-6 offset-md-3">
+						<!-- Email input -->
+						<div class="form-floating mb-3">
+							<input value="user@appointments.com" name="email" type="email" class="form-control"
+								id="email" placeholder="Email" required>
+							<label for="email">Email</label>
+
+							<div class="valid-feedback">
+							</div>
+							<div class="invalid-feedback">
+								Ingrese un email valido.
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-md-6 offset-md-3">
+						<!-- Password input -->
+						<div class="form-floating mb-3">
+							<input id="password" name="password" type="password" value="timo" placeholder="Contraseña"
+								class="form-control" required />
+							<label for="password">Contraseña</label>
+
+							<div class="valid-feedback">
+							</div>
+							<div class="invalid-feedback">
+								Ingrese una contraseña.
+							</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<!-- Submit button -->
+						<div class="form-outline mb-4 text-center">
+							<button type="submit" class="btn bg-success bg-opacity-25 btn-block mb-4">Ingresar</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Bootstrap JS -->
+	<script defer src="/static/assets/bootstrap/js/popper.min.js"></script>
+	<script defer src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+
+	<script defer>
+		(function () {
+			'use strict';
+			window.addEventListener('load', function () {
+				var forms = document.getElementsByClassName('needs-validation')
+
+				var validation = Array.prototype.filter.call(forms, function (form) {
+					form.addEventListener('submit', function (event) {
+						if (form.checkValidity() === false) {
+							event.preventDefault()
+							event.stopPropagation()
+						}
+						form.classList.add('was-validated')
+					}, false)
+				})
+			}, false)
+		})()
+	</script>
+</body>
+
+</html>

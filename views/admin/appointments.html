@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es" data-lt-installed="true">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Consultas de Médicas y de Health Coaching">
+    <meta name="author" content="jjoss">
+    <meta name="keywords" content="Coaching, Medicina, Consultas, Turnos">
+
+    <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico">
+
+    <!-- Bootstrap CSS -->
+    <link rel="preload" href="/static/assets/bootstrap/css/bootstrap.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/bootstrap/css/bootstrap.min.css">
+    </noscript>
+
+    <link rel="preload" href="/static/assets/bootstrap/icons/bootstrap-icons.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/bootstrap/icons/bootstrap-icons.css">
+    </noscript>
+
+    <!-- Layout Styles -->
+    <link rel="preload" href="/static/assets/css/admin-layout.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/css/admin-layout.css">
+    </noscript>
+
+    <!-- Datepicker CSS -->
+    <link rel="preload" href="/static/assets/datepicker/css/bootstrap-datepicker3.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="/static/assets/datepicker/css/bootstrap-datepicker3.css">
+    </noscript>
+
+    <title>Turnos</title>
+</head>
+
+<body>
+    <!-- navbar only available for screen size < md -->
+    <nav class="navbar navbar-light bg-light d-block d-sm-none d-sm-block d-md-none"
+        aria-label="Navbar for screen size under md">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                    class="bi bi-calendar" viewBox="0 0 16 16">
+                    <path
+                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                </svg>
+                <span class="fs-5 fw-semibold p-3">Turnos</span>
+            </a>
+            <button class="navbar-toggler bg-success bg-opacity-10" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarsExample01" aria-controls="navbarsExample01" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample01">
+                <ul class="list-unstyled ps-0">
+                    <li class="mb-1">
+                        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                            data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                            Cuenta
+                        </button>
+                        <div class="collapse" id="account-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a href="/admin/profile"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">Configuración</a>
+                                </li>
+                                <li>
+                                    <form action="/auth/logout" method="post">
+                                        <button type="submit"
+                                            class="btn btn-sm bg-danger bg-opacity-50 logout-btn d-inline-flex text-decoration-none rounded">Salir</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="border-top my-3"></li>
+                    <li class="mb-1">
+                        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                            data-bs-toggle="collapse" data-bs-target="#appointment-collapse" aria-expanded="false">
+                            Turnos
+                        </button>
+                        <div class="collapse" id="appointment-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a href="/admin/bookings"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">Reservas</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="collapse" id="appointment-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a href="/admin/appointments"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">
+                                        Habilitar Turnos
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="collapse" id="appointment-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a href="/admin/appointmentTypes"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">
+                                        Tipos de Consultas
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="collapse" id="appointment-collapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a href="/admin/clients"
+                                        class="link-dark d-inline-flex text-decoration-none rounded">
+                                        Clientes
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="d-flex flex-nowrap">
+        <div class="d-none d-sm-block d-sm-none d-md-block flex-shrink-0 p-3 bg-white">
+            <span class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                    class="bi bi-calendar" viewBox="0 0 16 16">
+                    <path
+                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                </svg>
+                <span class="fs-5 fw-semibold p-3">Turnos</span>
+            </span>
+            <ul class="list-unstyled ps-0">
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                        Cuenta
+                    </button>
+                    <div class="collapse" id="account-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="/admin/profile"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">Configuración</a>
+                            </li>
+                            <li>
+                                <form action="/auth/logout" method="post">
+                                    <button type="submit"
+                                        class="btn btn-sm bg-danger bg-opacity-50 logout-btn d-inline-flex text-decoration-none rounded">Salir</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="border-top my-3"></li>
+                <li class="mb-1">
+                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#appointment-collapse" aria-expanded="false">
+                        Turnos
+                    </button>
+                    <div class="collapse" id="appointment-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="/admin/bookings"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">Reservas</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="appointment-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="/admin/appointments"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">
+                                    Habilitar Turnos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="appointment-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="/admin/appointmentTypes"
+                                    class="link-dark d-inline-flex text-decoration-none rounded">
+                                    Tipos de Consultas
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="collapse" id="appointment-collapse">
+                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                            <li>
+                                <a href="/admin/clients" class="link-dark d-inline-flex text-decoration-none rounded">
+                                    Clientes
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="b-example-divider b-example-vr"></div>
+
+        <div class="container overflow-auto">
+            <h1 class="text-center display-1">Habilitación de Turnos</h1>
+            <hr>
+
+            <p hidden id="notDaysError" class="text-center">
+                <span class="lead fst-italic">No hay días de atención disponibles. Habilítelos desde:</span>
+                <br>
+                <a class="fst-italic" href="/admin/profile">Cuenta > Configuración > Días de Atención</a>
+            </p>
+
+            <div class="accordion accordion-flush" id="schedule">
+                <div class="row">
+                    <div class="col-12 col-md-6 p-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center fst-italic lead">Día de Atención</p>
+                            </div>
+                            <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                                <p hidden id="calendarSettingsMsg" class="text-center text-danger">
+                                    Error: No se pudo obtener la configuración del calendario.
+                                </p>
+
+                                <div id="calendarSpinner" hidden="true" class="spinner-border text-success"
+                                    style="--bs-text-opacity: .5;" role="status"></div>
+
+                                <div id="datepicker"></div>
+                                <input type="hidden" id="datepicker-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="d-md-none">
+
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="text-center fst-italic lead">Horarios de Atención</p>
+                            </div>
+                            <div class="col-12">
+                                <div class="list-group list-group-flush">
+                                    <div id="toast"
+                                        class="toast align-items-center position-fixed top-0 end-0 m-3 border-0"
+                                        role="alert" aria-live="assertive" aria-atomic="true">
+                                        <div class="d-flex">
+                                            <div id="toastBody" class="toast-body">
+                                            </div>
+                                            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                                                data-bs-dismiss="toast" aria-label="Close"></button>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <div hidden="true" id="hoursListSpinner" style="--bs-text-opacity: .5;"
+                                            class="spinner-border text-success text-opacity-50" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-column justify-content-center align-items-center"
+                                        id="attentionHoursList">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script defer src="/static/assets/bootstrap/js/popper.min.js"></script>
+    <script defer src="/static/assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Datepicker JS -->
+    <script defer src="/static/assets/bootstrap/js/jquery-3.6.0.slim.min.js"></script>
+    <script defer src="/static/assets/datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script defer src="/static/assets/datepicker/locales/bootstrap-datepicker.es.min.js"></script>
+
+    <script defer type="module" src="/static/assets/js/common.js"></script>
+    <script defer type="module" src="/static/assets/js/admin/appointment.js"></script>
+</body>
+
+</html>
