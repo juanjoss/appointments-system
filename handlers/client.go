@@ -47,13 +47,6 @@ func AppointmentBookedPage(c *fiber.Ctx) error {
 	})
 }
 
-// func ProcessPayment(c *fiber.Ctx) error {
-// 	return c.Render("client/payment", fiber.Map{
-// 		"error": c.Query("error"),
-
-// 	})
-// }
-
 func BookAppointment(c *fiber.Ctx) error {
 	var request ports.BookAppointmentRequest
 
@@ -105,7 +98,6 @@ func BookAppointment(c *fiber.Ctx) error {
 
 	// process payment
 	log.Println("payment processed")
-	// ProcessPayment(c)
 
 	// create client
 	clientId, err := db.Get().CreateClient(request.Client)

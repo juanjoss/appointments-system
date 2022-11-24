@@ -70,7 +70,7 @@ import { getCalendarSettings, getAppointmentsFor, toggleSpinner } from "../commo
     getCalendarSettings().then((calendar) => {
         if (calendar.excluded_week_days.length === 7) {
             document.getElementById("appointmentInfoTitle").textContent = ""
-            document.getElementById("appointmentInfoContent").textContent = "Lo sentimos, no se encuentran turnos disponibles actualmente."
+            document.getElementById("appointmentInfoContent").textContent = "appointments-system/sentimos, no se encuentran turnos disponibles actualmente."
             document.getElementById("appointmentInfo").hidden = false
         }
 

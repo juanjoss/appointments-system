@@ -1,14 +1,14 @@
 package utils
 
 import (
+	"os"
+
 	"gopkg.in/gomail.v2"
 )
 
 const (
-	host     = "smtp.gmail.com"
-	port     = 587
-	username = "<email>"
-	password = "<password>"
+	host = "smtp.gmail.com"
+	port = 587
 
 	bookingSuccessMsg = `
 		<h1 align="center">¡Gracias!</h1>
@@ -44,6 +44,11 @@ const (
 
 		<p>Esto es un email automatizado y no debes responder al mismo.</p>
 	`
+)
+
+var (
+	username = os.Getenv("SENDER_EMAIL")
+	password = os.Getenv("SENDER_PASSWORD")
 )
 
 func BookingSuccessTemplate() string {
