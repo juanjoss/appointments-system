@@ -8,6 +8,8 @@ An appointments system with a frontend, a backend and a database.
 
 # Run it with Docker Compose
 
+A `.env` file with user and password credentials (`SENDER_EMAIL` and `SENDER_PASSWORD` in docker-compose.yaml) is required to send notification emails.
+
 ```bash
 docker compose up -d
 ```

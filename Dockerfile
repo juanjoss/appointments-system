@@ -19,6 +19,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 
 # Stage 1: production app
 FROM gcr.io/distroless/static AS prod
-WORKDIR /app
-COPY --from=build /src .
+USER nonroot:nonroot
+COPY --from=build --chown=nonroot:nonroot /src .
 CMD ["./app"]

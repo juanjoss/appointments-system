@@ -16,7 +16,7 @@ services:
     volumes:
       - /usr/local/pgsql:/usr/local/pgsql
     restart: always
-    
+
   app:
     container_name: app
     hostname: app
@@ -35,8 +35,8 @@ services:
       DB_SSL_MODE: disable
       APP_PORT: 3000
       TZ: America/Buenos_Aires
-      SENDER_EMAIL: <email>
-      SENDER_PASSWORD: <password>
+      SENDER_EMAIL: ${SENDER_EMAIL}
+      SENDER_PASSWORD: ${SENDER_PASSWORD}
     ports:
       - 3000:3000
     volumes:
