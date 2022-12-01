@@ -6,7 +6,7 @@ An appointments system with a frontend, a backend and a database.
 - The backend uses Fiber (Go framework) and JWT for authentication.
 - The DB is Postgres.
 
-# Run it with Docker Compose
+## Run it with Docker Compose
 
 A `.env` file with user and password credentials (`SENDER_EMAIL` and `SENDER_PASSWORD` in docker-compose.yaml) is required to send notification emails.
 
@@ -14,11 +14,11 @@ A `.env` file with user and password credentials (`SENDER_EMAIL` and `SENDER_PAS
 docker compose up -d
 ```
 
-# ERD Diagram
+## ERD Diagram
 
 ![arch_basic](https://drive.google.com/uc?export=view&id=1E6kkXp-uOc_FyRFliFzuO0bEYyPjeKMj)
 
-# Endpoints
+## Endpoints
 
 Client Endpoints
 - `GET /bookings` (main page)
